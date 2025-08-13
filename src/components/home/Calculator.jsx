@@ -47,7 +47,7 @@ const Calculator = () => {
   };
 
   return (
-    <div className="w-full md:w-[560px] min-h-[674px] m-2 md:p-[30px] flex flex-col xl:p-[50px] rounded-[7px] bg-white p-5 border border-[#E5E5E7]">
+    <div className=" md:w-[560px] min-h-[674px] m-2 md:p-[30px] flex flex-col xl:p-[50px] rounded-[7px] bg-white p-5 border border-[#E5E5E7]">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5 w-full">
 
         {/* Account Value */}
