@@ -42,18 +42,29 @@ const Calculator = () => {
     if (!accountValue || !entryPrice || !stopPrice) return;
     const riskAmount = (Number(accountValue) * riskPerTrade) / 100;
     const riskPerShare = entryPrice - stopPrice;
-    const shares = riskAmount / riskPerShare;
-    setSharesToBuy(Math.floor(shares));
+    if (riskPerShare > 0) {
+      const shares = riskAmount / riskPerShare;
+      setSharesToBuy(Math.floor(shares));
+    } else {
+      setSharesToBuy(0);
+    }
   };
 
+  // Auto calculate when inputs change
+  useEffect(() => {
+    calculateShares();
+  }, [accountValue, riskPerTrade, entryPrice, stopPrice]);
+
   return (
-    <div className=" md:w-[560px] min-h-[674px] m-2 md:p-[30px] flex flex-col xl:p-[50px] rounded-[7px] bg-white p-5 border border-[#E5E5E7]">
+    <div className="md:w-[560px] min-h-[674px] m-2 md:p-[30px] flex flex-col xl:p-[50px] rounded-[7px] bg-white p-5 border border-[#E5E5E7]">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5 w-full">
 
         {/* Account Value */}
-        <div className="text-center w-[70%] mx-auto md:w-[193px] p-2 md:p-[14px]">
-          <label className="block text-sm md:text-[15px] font-semibold text-[#000000] mb-1">Account Value $</label>
-          <span className="block text-[10px] md:text-[13px] font-medium text-[#000000] mb-2">
+        <div className="text-center w-[70%] mx-auto md:w-[193px] p-2 md:p-[14px] flex flex-col gap-[14px]">
+          <label className="block text-sm md:text-[15px] font-semibold text-[#000000] ">
+            Account Value $
+          </label>
+          <span className="block text-[10px] md:text-[13px] font-medium text-[#000000] opacity-70">
             What have you in your trading account.
           </span>
           <input
@@ -68,7 +79,7 @@ const Calculator = () => {
               }
             }}
             onWheel={(e) => e.target.blur()}
-            className="w-full text-center font-bold text-xl md:text-[30px] text-[#000000] outline-none bg-transparent"
+            className="w-full text-center font-bold text-xl md:text-[30px] text-[#000000] outline-none bg-transparent letter_spacing"
           />
           <SmoothSlider
             min="0"
@@ -80,9 +91,11 @@ const Calculator = () => {
         </div>
 
         {/* Risk Per Trade */}
-        <div className="text-center w-[70%] mx-auto md:w-[193px] p-2 md:p-[14px]">
-          <label className="block text-sm md:text-[15px] font-semibold text-[#000000] mb-1">Risk Per Trade</label>
-          <span className="block text-[10px] md:text-[13px] font-medium text-[#000000] mb-2">
+        <div className="text-center w-[70%] mx-auto md:w-[193px] p-2 md:p-[14px] flex flex-col gap-[14px]">
+          <label className="block text-sm md:text-[15px] font-semibold text-[#000000]">
+            Risk Per Trade
+          </label>
+          <span className="block text-[10px] md:text-[13px] font-medium text-[#000000] opacity-70">
             How much you're willing to risk on one trade.
           </span>
           <div className="relative w-full">
@@ -91,7 +104,7 @@ const Calculator = () => {
               value={riskPerTrade}
               onChange={(e) => setRiskPerTrade(parseFloat(e.target.value) || 0)}
               onWheel={(e) => e.target.blur()}
-              className="w-full text-center font-bold text-xl md:text-[30px] text-[#000000] outline-none bg-transparent no-arrows pr-6"
+              className="w-full text-center letter_spacing font-bold text-xl md:text-[30px] text-[#000000] outline-none bg-transparent no-arrows pr-6"
             />
             <span className="absolute right-[25%] top-1/2 -translate-y-1/2 text-xl md:text-[30px] font-bold text-[#000000] pointer-events-none">
               %
@@ -107,9 +120,11 @@ const Calculator = () => {
         </div>
 
         {/* Entry Price */}
-        <div className="text-center w-[70%] mx-auto md:w-[193px] p-2 md:p-[14px]">
-          <label className="block text-sm md:text-[15px] font-semibold text-[#000000] mb-1">Entry $</label>
-          <span className="block text-[10px] md:text-[13px] font-medium text-[#000000] mb-2">
+        <div className="text-center w-[70%] mx-auto md:w-[193px] p-2 md:p-[14px] flex flex-col gap-[14px]">
+          <label className="block text-sm md:text-[15px] font-semibold text-[#000000]">
+            Entry $
+          </label>
+          <span className="block text-[10px] md:text-[13px] font-medium text-[#000000] opacity-70">
             The price at which you plan to buy the asset.
           </span>
           <input
@@ -124,7 +139,7 @@ const Calculator = () => {
               }
             }}
             onWheel={(e) => e.target.blur()}
-            className="w-full text-center font-bold text-xl md:text-[30px] text-[#000000] outline-none bg-transparent"
+            className="w-full letter_spacing text-center font-bold text-xl md:text-[30px] text-[#000000] outline-none bg-transparent"
           />
           <SmoothSlider
             min="0"
@@ -136,9 +151,11 @@ const Calculator = () => {
         </div>
 
         {/* Stop Price */}
-        <div className="text-center w-[70%] mx-auto md:w-[193px] p-2 md:p-[14px]">
-          <label className="block text-sm md:text-[15px] font-semibold text-[#000000] mb-1">Stop $</label>
-          <span className="block text-[10px] md:text-[13px] font-medium text-[#000000] mb-2">
+        <div className="text-center w-[70%] mx-auto md:w-[193px] p-2 md:p-[14px] flex flex-col gap-[14px]">
+          <label className="block text-sm md:text-[15px] font-semibold text-[#000000] ">
+            Stop $
+          </label>
+          <span className="block text-[10px] md:text-[13px] font-medium text-[#000000] opacity-70">
             The price where you will exit to limit your loss.
           </span>
           <input
@@ -153,7 +170,7 @@ const Calculator = () => {
               }
             }}
             onWheel={(e) => e.target.blur()}
-            className="w-full text-center font-bold text-xl md:text-[30px] text-[#000000] outline-none bg-transparent"
+            className="w-full letter_spacing text-center font-bold text-xl md:text-[30px] text-[#000000] outline-none bg-transparent"
           />
           <SmoothSlider
             min="0"
@@ -165,6 +182,7 @@ const Calculator = () => {
         </div>
       </div>
 
+      {/* Button Click Calculation */}
       <div
         className="text-center text-2xl text-blue-500 cursor-pointer my-5"
         onClick={calculateShares}
@@ -172,8 +190,10 @@ const Calculator = () => {
         <img src="/btn.png" alt="" className="mx-auto" />
       </div>
 
-      <div className="text-center bg-gray-100 rounded-lg p-4 mt-5 w-[182px] border border-[#E3E3E8] box_shadow mx-auto">
-        <h3 className="text-sm md:text-[15px] text-[#000000] font-semibold mb-1">Shares To Buy</h3>
+      <div className="text-center bg-white rounded-[17px] p-4 mt-5 w-[182px] min-h-[115px] border border-[#E3E3E8] box_shadow mx-auto flex flex-col justify-center items-center">
+        <h3 className="text-sm md:text-[15px] text-[#000000] font-semibold mb-1 letter_spacing">
+          Shares To Buy
+        </h3>
         <p className="text-2xl md:text-[30px] font-bold text-[#000000]">
           {sharesToBuy.toLocaleString()}
         </p>
