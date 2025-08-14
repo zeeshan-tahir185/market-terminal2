@@ -31,13 +31,11 @@
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
-.box_shadow{
-   box-shadow: 0px 0px 40px 0px #A2A2A240;
 
+.box_shadow {
+  box-shadow: 0px 0px 40px 0px #A2A2A240;
 }
 
-.letter_spacing{
-    letter-spacing: 1px !important;
-    font-weight: 800;
-
+.letter_spacing {
+  letter-spacing: 1px;
 }
