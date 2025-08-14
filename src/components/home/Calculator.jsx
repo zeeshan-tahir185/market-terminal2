@@ -36,19 +36,29 @@ function useAnimatedNumber(value, duration = 500, animate = true) {
 // Smooth slider
 const SmoothSlider = ({ value, min, max, step, onChange }) => {
   const [displayValue, setDisplayValue] = useState(value);
+  const isDragging = useRef(false);
+  const animationRef = useRef(null);
 
   useEffect(() => {
-    let frame;
-    const stepAnim = () => {
+    if (isDragging.current) {
+      // User dragging -> update instantly
+      setDisplayValue(value);
+      return;
+    }
+
+    // Smooth animation only when value changes from outside
+    cancelAnimationFrame(animationRef.current);
+    const animate = () => {
       setDisplayValue((prev) => {
         const diff = value - prev;
         if (Math.abs(diff) < 0.01) return value;
-        return prev + diff * 0.15;
+        return prev + diff * 0.1; // Speed
       });
-      frame = requestAnimationFrame(stepAnim);
+      animationRef.current = requestAnimationFrame(animate);
     };
-    stepAnim();
-    return () => cancelAnimationFrame(frame);
+    animate();
+
+    return () => cancelAnimationFrame(animationRef.current);
   }, [value]);
 
   return (
@@ -58,11 +68,17 @@ const SmoothSlider = ({ value, min, max, step, onChange }) => {
       max={max}
       step={step}
       value={displayValue}
-      onChange={onChange}
-      className="range-slider"
+      onChange={(e) => {
+        isDragging.current = true;
+        onChange(e);
+      }}
+      onMouseUp={() => (isDragging.current = false)}
+      onTouchEnd={() => (isDragging.current = false)}
+      className="range-slider cursor-pointer"
     />
   );
 };
+
 
 const Calculator = () => {
   const [accountValue, setAccountValue] = useState(100000);
@@ -339,7 +355,7 @@ const Calculator = () => {
         </h3>
         <p className="text-2xl md:text-[30px] font-bold text-[#000000]">
           {animatedSharesToBuy.toLocaleString(undefined, {
-            maximumFractionDigits: 1,
+            maximumFractionDigits: 0,
           })}
         </p>
       </div>
